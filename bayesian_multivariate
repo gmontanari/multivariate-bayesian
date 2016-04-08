@@ -1,0 +1,34 @@
+####
+Estadística bayesiana bésica
+####
+####
+4 opciones de modelos
+
+la observación inicial es la misma paara todos
+Verosimilitud!
+N_n(Y|X'beta,sigmaI_n)
+
+las prior es incorporar incertidumbre en los modelos
+
+modelo 1 (conugado convecional)
+Prior 
+N_p(beta|m_0,sigma S_0 <matriz de covarianzas>) Gama(sigma|sigma_0,beta_0)
+
+modelo 2
+independencia inicial en los coeficientes de regresión
+prior
+N_p(beta|m_0,sigma diag{S_01 ... S_0p} Gama(sigma|sigma_0,beta_0)
+
+modelo 3
+prior
+N_p(beta|m_0,S_0 <matriz de covarianzas>) Gama(sigma|sigma_0,beta_0)
+
+modelo 4
+prior
+N_p(beta|m_0, diag{S_01 ... S_0p}) Gama(sigma|sigma_0,beta_0)
+
+--selección de variables de regresión
+-intuición, entre más covariables, entonces y más precisa	
+
+--principio de Occam (kiss)
+modelos simples son preferibles a modelos complejos en particular, en particular en problemas de predicción estocástica

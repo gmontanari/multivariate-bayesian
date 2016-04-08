@@ -9,7 +9,7 @@
 #
 
 rm(list = ls())
-rutawork = 'C:/JCMO.Academia/@Cursos/2016-I_Inferencia Bayesiana en Alta Dimension/_data&code/SSVS/'
+rutawork = '/home/pedrohserrano/multivariate-bayesian/'
 #rutawork <- '/media/jcmo/ROCADATA/JCMO.Academia/@Cursos/2016-I_Inferencia\ Bayesiana\ en\ Alta Dimension/_data&code/SSVS/'
 
 #	----------------------------------------------------
@@ -62,6 +62,7 @@ Pbeta0 <- 0.25*diag(7)
 
 #		MCMC
 beta <- rep(0,7)	# Valor inicial de la cadena de Markov
+#ESTA SE PUEDE SUSTITUIR POR EL ESTIMADOR MAXIMO VEROSIMIL beta_mle
 n <- nrow(dde)		# Numero de observaciones/individuos
 z <- rep(0,n)		# Valores iniciales de las variables latentes (modelo probit)
 G <- 1000			# Numero de iteraciones del MCMC
