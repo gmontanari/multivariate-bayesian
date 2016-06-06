@@ -1,0 +1,506 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Large Colored Title Article
+% LaTeX Template
+% Version 1.1 (25/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+%	JC: POR FAVOR, NO MODIFIQUEN EL FORMATO DEL DOCUMENTO.
+%
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[DIV=calc, 
+					paper=letter, 
+					fontsize=11pt, 
+					twocolumn]{scrartcl}
+
+\usepackage{lipsum}
+\usepackage[spanish]{babel}
+\usepackage[protrusion=true,
+				expansion=true]{microtype}
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage[svgnames]{xcolor}
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption}
+\usepackage{booktabs}
+\usepackage{fix-cm}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{lineno}
+\usepackage{ragged2e}
+\usepackage{float}
+\usepackage[export]{adjustbox}
+
+\usepackage{sectsty}
+\allsectionsfont{\usefont{OT1}{phv}{b}{n}} % Change the font of all section commands
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{lastpage}
+
+% Headers - all currently empty
+\lhead{}
+\chead{}
+\rhead{}
+
+% Footers
+\lfoot{}
+\cfoot{}
+\rfoot{\footnotesize P\'agina \thepage\ de \pageref{LastPage}} % "Page 1 of 2"
+
+\renewcommand{\headrulewidth}{0.0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\usepackage{lettrine} % Package to accentuate the first letter of the text
+\newcommand{\initial}[1]{ % Defines the command and style for the first letter
+\lettrine[lines=3,lhang=0.3,nindent=0em]{
+\color{DarkGoldenrod}
+{\textsf{#1}}}{}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\usepackage{titling} % Allows custom title configuration
+
+\newcommand{\HorRule}{\color{DarkGoldenrod} \rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
+
+\pretitle{\vspace{-30pt} \begin{flushleft} \HorRule \fontsize{50}{50} \usefont{OT1}{phv}{b}{n} \color{DarkRed} \selectfont} % Horizontal rule before the title
+
+%
+%	JC: ADAPTAR
+%
+\title{\Huge Ausentismo de funcionarios en las casillas electorales \\
+Reporte EST-46114} % Your article title
+
+\posttitle{\par\end{flushleft}\vskip 0.5em} % Whitespace under the title
+
+\preauthor{\begin{flushleft}\large \lineskip 0.5em \usefont{OT1}{phv}{b}{sl} \color{DarkRed}} % Author font configuration
+
+\author{	Pedro Vladimir Hern\'andez Serrano 
+			\& 
+			Jos\'e Alfredo M\'endez Barrera }
+
+\postauthor{\footnotesize 
+				\usefont{OT1}{phv}{m}{sl} 
+				\color{Black}
+				% Configuration for the institution name
+				ITAM % Your institution
+
+\par\end{flushleft}\HorRule} % Horizontal rule after the title
+
+\date{\today} % Add a date here if you would like one to appear underneath the title block
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+\thispagestyle{fancy} % Enabling the custom headers/footers for the first page 
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\textbf{En el presente documento se revisan los diferentes factores que pueden influenciar el ausentismo de funcuionarios de casillas en los comicios electorales, lo cual es una problem\'atica importante en el desarrollo de la operaci\'on durante las jornadas electorales. El prop\'osito es desarrollar un procedimiento que utilice consideraciones estoc\'asticas para seleccionar un conjunto de regresores con ayuda de simulaciones y de esta manera encontrar modelos prometedores. Se revisar\'a el m\'etodo de Selecci\'on Estoc\'astica de Variables, la clave para el potencial de SSVS es la simulaci\'on r\'apida y eficiente del sistema de muestreo de Gibbs. Posteriormente se ajusta un modelo de Regresi\'on Lineal Generalizado a la informaci\'on de CDMX, los datos descriptivos utilizados son al corte final de las elecciones del 2015 en su acumulado nacional.}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+\section{Introducci\'on}
+\vspace{3mm}
+
+~~El Instituto Nacional Electoral es el encargado de organizar las elecciones en nuestro país. \'Estas son la culminaci\'on de todo un proceso electoral que inicia el a\~no anterior y concluye una vez que los resultados de las contiendas son ratificados.\\
+
+A ra\'iz de la \'ultima reforma electoral se estipul\'o que en las entidades donde se elijan tanto puestos federales como locales, las casillas se integrar\'an de seis funcionarios y en los casos donde se elijan \'unicamente puestos de \'ambito federal ser\'an cuatro. El conseguir que cada una de estas personas lleguen a ocupar su puesto el d\'ia de la jornada es una de las tareas donde m\'as atenci\'on pone el Instituto. El \'area encarcada de esto es la Direcci\'on de Ejecutiva de Capacitaci\'on Electoral y Educaci\'on C\'ivica ($DECEyEC$), por medio de sus capacitadores electorales.\\
+
+~~Cuando un funcionario no asiste el d\'ia de la jornada, su puesto tiene que ser cubierto por alguna de las personas que se encuentran en la fila listas para votar. El problema de lo anterior es que esas personas no fueron capacitadas para el puesto y pueden poner en peligro la calidad de la elecci\'on en esa casilla. Por lo tanto, una forma en la que se puede medir la calidad en la capacitaci\'on es utilizando a la variable (o alguna tranformaci\'on de la misma) determinada por el n\'umero de $funcionarios$ $que$ $no$ $llegaron$ a ocupar su puesto el d\'ia de la jornada.\\
+
+~~El problema descrito anteriormente es una dificultad clave a la que se enfrenta el INE requiere estudiar este fen\'onemo con el fin de entender qu\'e variables o factores pueden ayudar a identificar los casos donde existir\'a $ausencia$ $de$ $ciudadanos$ que ya estaban capacitados y designados para ser funcionarios de casilla.\\
+
+\section{Caso de Estudio}
+
+Despu\'es de las elecciones electorales del 2015 surgen ecos de la pr\'actica democr\'atica, los consejeros electorales  comienzan a analizar los resultados de la jornada. El INE comienza a explorar medidas para accionar de las personas durante las elecciones, con el fin de encontrar \'ares de oportunidad y fortalezas en el proceso.\\
+
+Las actividades electorales requieren accionar a los ciudadanos que fungen como funcionarios de casilla. Durante el proceso electoral se pueden presentar situaciones que entorpecen el proceso electoral, por lo que se requiere realizar un esfuerzo para el calculo de probabilidades de ocurrencia. La ausencia de funcionarios de casilla es una de las situaciones m\'as habituales y que significan mayor problem\'atica para el INE (en ausencia de alguno, se tomar\'a a una persona de la fila para votar para que tome las responsabilidades).\\
+
+En 2015, 7.7\% de los funcionarios capacitados no se presentaron. Estas faltas ocurrieron en casi una cuarta parte de las casillas (23\%) en todo el país. Del mismo modo y para hacer un an\'alisis m\'as fundamentado es necesario realizar un estudio de los factores inciden en la probabilidad de asistencia. De manera general se tomar\'an los “rechazos” (se invita a participar al proceso electoral y rechaza), “notificaciones efectivas”(Persona con probabilidad de fungir como funcionario) y “sustituciones”(Casillas en la que el capacitado declina en alg\'un punto del adiestramiento y se sustituye por una persona en la lista de reserva) como los factores de alerta (variables explicativas).
+\vspace{8cm}
+
+\section{An\'alisis Exploratorio}
+\subsection{Transformaci\'on de variables}
+\vspace{3mm}
+
+~~De las m\'as de \textit{140,000} casillas, m\'as de \textit{32,000} tuvieron \textit{Ausentismo}, lo cual representa un \textit{23\%} del total. 
+
+\subsubsection{Rechazos}
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.9\linewidth, height=5cm]{porechazos}
+\label{fig:porechazos}
+\end{figure}
+
+La gr\'afica \ref{fig:porechazos} el porcentaje de casillas con ausentismo para diferentes niveles de porcentaje de rechazos.\\
+\begin{equation*}
+\% \ de \ rechazos = \frac{rechazos}{visitados}
+\end{equation*}
+
+Los intervalos de porcentaje de rechazos en cada casilla se construyeron como sigue: \\
+
+$0 - 10\% >10\% - 20\% >20\% - 30\%	>30\% - 40\%  >40\%$ \\
+
+\begin{itemize}
+\item \textbf{En casillas federales y concurrentes}, a mayor nivel de rechazos hay mayor porcentaje de casillas con ausentismo.\\
+Si hay un alto nivel de rechazos, el porcentaje de casillas con ausentismo parece estabilizarse\\
+\item \textbf{En casillas federales}, la proporci\'on de casillas con ausentismo pasa de 12\% para el nivel más bajo de rechazos a 24\% en el nivel más alto de esta variable\\
+\end{itemize}
+Por lo tanto, si se obtiene más de 40\% de rechazos, la proporci\'on de casillas con ausentismo aumenta en 100\% respecto a la proporción de casillas con ausentismo que hay con 0 a 10\% de rechazos.
+
+
+\subsubsection{Notificaciones efectivas}
+\vspace{3mm}
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.9\linewidth, height=5cm]{notef}
+\label{fig:notef}
+\end{figure}
+
+En la gr\'afica \ref{fig:notef} se presenta el porcentaje de casillas con ausentismo para diferentes niveles de porcentaje de notificaciones efectivas. 
+
+\begin{equation*}
+\% de \ notificaciones \ efectivas = \frac{notificaciones efectivas}{visitados}
+\end{equation*}
+
+Al igual que en la variable rechazos, se hicieron intervalos de porcentaje de notificaciones efectivas en cada casilla:\\ 
+
+$0 - 25\%  >25\% - 50\% 	>50\% - 75\%	>75\%$\\
+
+\begin{itemize}
+\item \textbf{En casillas federales}, la proporción de casillas con ausentismo pasa de 17\% para el nivel más bajo de notificaciones efectivas a 9\% en el nivel más alto de esa variable.\\
+\end{itemize}
+
+Por lo tanto, si se obtiene más de 75\% de notificaciones efectivas, la proporción de casillas con ausentismo disminuye en 80\% respecto a la proporción de casillas con ausentismo que hay con 0 a 25\% de notificaciones efectivas\\
+
+En las notificaciones efectivas en elecciones concurrentes se observa que a mayor nivel de notificaciones efectivas por casilla, la probabilidad de que en la casilla se presentara ausentismo disminuye.La probabilidad de ausentismo pasa del 35\% para el nivel más bajo de Notificaciones efectivas al 30\% en el nivel más alto.\\
+
+En las notificaciones efectivas en elecciones federales se muestra que a mayor nivel de notificaciones efectivas por casilla, la probabilidad de que en la casilla se presentara ausentismo disminuye. La probabilidad de ausentismo pasa del 17\% para el nivel más bajo de Notificaciones efectivas al 9\% en el nivel más alto. Por lo tanto, si se obtienen más del 75\% de notificaciones efectivas, el ausentismo disminuiría su probabilidad de aparición en un 80\% con respecto a la más alta.\\
+
+\subsubsection{Sustituciones}
+\vspace{3mm}
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.9\linewidth, height=5cm]{sust}
+\label{fig:sust}
+\end{figure}
+
+En la gr\'afica \ref{fig:sust} se muestra el porcentaje de casillas con ausentismo para cada número de sustituciones que hubo por casilla\\
+\begin{itemize}
+\item \textbf{En casillas federales y concurrentes}, a mayor número de sustituciones por casilla aumenta la proporción de casillas con ausentismo.\\
+\item  \textbf{En casillas federales}, la proporción de casillas con ausentismo pasa de 10\% cuando no hay sustituciones a 27\% cuando hay 8 ó más sustituciones por casilla. \\
+\end{itemize}
+
+De las variables que se presentan en el estudio, “sustituciones” es la que tiene la relación más clara, casi lineal, con porcentaje de casillas con ausentismo. Si hay 8 ó más sustituciones en una casilla, la proporción de casillas con ausentismo aumenta en 170\%\\
+
+\subsubsection{N\'umero de Casillas por Capacitador}
+\vspace{3mm}
+
+\begin{figure}[H]
+\caption{}
+\centering\includegraphics[width=0.9\linewidth]{nocas}
+\label{fig:nocas}
+\end{figure}
+
+~~Cada \textit{Capacitador Electoral} (\textit{CAE}) tuvo a su cargo determinado n\'umero de casillas para integrarlas por medio de la capacitaci\'on y designaci\'on de ciudadanos que fungir\'an como funcionarios de las mismas. EL \textit{INE} estipula promedios de casillas por \textit{CAE} diferenciados entre casos con elecciones concurrentes y federales; en promedio los n\'umeros para los primeros casos son menores que para los segundos. Para problemas con la escala, esta variable se divide entre el m\'aximo de casillas por \textit{CAE} que hubo en el \'ambito respectivo. Es decir, para las casillas concurrentes, se divi\'o entre \textit{9} y para las federales fue entre \textit{10}.\\
+
+\subsubsection{Porcentaje de Mujeres Designadas}
+\vspace{3mm}
+
+\begin{figure}[H]
+\caption{}
+\centering\includegraphics[width=0.9\linewidth]{nocas}
+\label{fig:mujeres}
+\end{figure}
+
+El porcentaje de mujeres es en general mayor para elecci\'ones concurrentes. Por otra parte se distingue que si el \textit{CAE} tiene m\'as de 6 casillas, el porcentaje de mujeres disminuye considerablemente.
+
+\subsubsection{Edad Promedio}
+\vspace{3mm}
+
+\begin{figure}[H]
+\caption{}
+\centering\includegraphics[width=0.7\linewidth]{edades_prom}
+\label{fig:edades_prom}
+\end{figure}
+
+La edad de los ciudadanos designados tanto en elecci\'ones concurrentes como en Federales va de 20 a 64 a$\tilde{n}$os y el promedio en ambos casos es muy parecido.\\
+
+\section{Metodolog\'ia y Modelo}
+
+Bajo el contexto de construir un modelo de regresi\'on lineal generalizado, se considera un punto de vista Bayesiano para la selecci\'on de variables. Dada una variable $Y$ y un conjunto $p$ de posibles regresores $X_1,\cdots,X_p$, el problema se reduce en encontrar el mejor modelo de la forma $Y = X_1∗\beta_1∗ +\cdots+X_q∗\beta_q∗ +\epsilon$ donde $X_1^∗,\cdots,X_q^∗$ es el subgrupo seleccionado de  $X_1,\cdots,X_p$. La identificaci\'on de ese subgrupo \'optimo es un problema muy importante en en el an\'alisis est\'istico que ha sido causa de mucha labor mental de los est\'isticos que se han enfocado en solucionarlo.\\
+
+Una primera alternativa que se piensa es la de evaluar todos y cada uno de los modelos que son posibles generar con las covariables con las que se cuenta. El problema de hacer tomar este camino es que conforme $p$ crece, la cantidad de modelos por evaluar crece exponencialmente ($2 ^{p}$ modelos).\\
+
+Es por lo anterior que se recurre a alguna de las t\'ecnicas de selecci\'on de variables que algunas de esas grandes mentes han generado. En este caso de estudio se recurri\'o a uno de los m\'etodos de la Selecci\'on de variables por B\'usqueda Estoc\'astica ($SSVS$ por sus siglas en ingl\'es), m\'as particularmente, el que considera efecto aleatorio y que fue introducido por $Meuwissen$ $\&$ $Goddard$.\\
+
+
+
+Este procedimiento conlleva la especificaci\'on de una prior de tipo jer\'arquica que usa los datos para asignar mayor probabilidad posterior a los modelos más prometedores. Para evitar la carga abrumadora de calcular las probabilidades a posteriori de todos los modelos $2^p$, SSVS utiliza el muestreo de Gibbs para simular una muestra de la distribuci\'on posterior. Dado que los modelos de alta probabilidad son m\'as propensos a aparecer r\'apidamente, el muestreo de Gibbs a veces puede identificar esos modelos con recorridos relativamente cortos.\\
+
+En este enfoque, la clave reside en suponer una distribuci\'on estrecha concentrada alrededor de cero. Sea $\theta_j= \beta_j$ y donde la variable indicadora afecta a la distribuci\'o a-priori de $\beta_j$, es decir,  $P (\gamma_j, \beta_j) = P (\beta_j | I_j) P (I_j)$. Podemos entonces definir una distribuci\'on mixta para $\beta$ 
+\begin{equation}
+P (\beta_j | \gamma_j) = (1 - \gamma_j) N (0, \tau_2) + \gamma_j N (0, g\tau^2)
+\end{equation}
+
+Donde la primera densidad est\'a centrado en cero y tiene una peque\~na diferencia, pero a fin de obtener la convergencia del algoritmo requiere la especificaci\'on de los par\'ametros $\tau^2$ y $g*\tau^2$ por lo que se busca que el ajuste en la precisi\'on no es f\'acil, ya que $P (\beta_j | \gamma_j = 0)$ tiene que ser muy peque\~na, pero al mismo tiempo no demasiado restringida que impida que las variables puedan cambiar su valor de $0$ a $1$.\\
+
+El hecho de que todas las $\beta_j$ impliquen de manera inicial, por medio de su a-prioris, que sus respectivas covariables son no significativas para el modelo y que sean los propios datos los que vayan generando las correcciones en dichas distribuciones y les vayan dando importancia a cada covariable, dependiendo de la participaci\'on real que van teniendo en cada una de las observaciones, es lo que hizo a este m\'etodo un buen candidato para aplicar la selecci\'on de variables. Otra raz\'on es que nos permit\'ia hacer la precisi\'on de las $\beta_j$ variantes y en t\'erminos de las probabilidades de la inclusi\'on de las covariables de la base de datos. Por esto, entre otras razones, fue por lo que se eligi\'o a este m\'etodo para este ejercicio.\\
+
+Por lo anterior, es necesario mencionar tambi\'en una caracter\'istica que se consider\'o en las a-prioris de este modelo. Para este m\'etodo es necesario determinar cu\'al es la probabilidad inicial de que cada una de las $\gamma_j$ tome el valor de $1$, \'o, lo que es lo mismo, cu\'al es la probabilidad inicial de que cada una de las $X_j$ sea incluida en el modelo. Durante la aplicaci\'on se generaron dos corridas sobresalientes donde cada una cont\'o con una probabilidad inical para las $\gamma_j$ diferente. Esto se mencionar\'a con mayor profundidad m\'as adelante.\\
+
+~~El modelo de SSVS se implementa en BUGS, y con esta idea, se tiene que hacer incapi\'e en la importacia de elegir las funciones prior utilizadas y como son implementadas.\\
+
+~~Recordemos que en el marco bayesiano, el problema de selecci\'on del modelo se transforma en una estimaci\'on de par\'ametros, y en lugar de buscar el modelo \'optimo individual, se buscar\'a estimar la probabilidad posterior de todos los modelos dentro de la clase considerada de modelos, comenzamos describiendo un modelo general que constituye la base de la caracterizaci\'on del m\'etodo. En primer lugar, el modelo lineal normal est\'andar se utiliza para describir la relaci\'on entre la variable dependiente observada y el conjunto de todos los predictores potenciales $X_1,\cdots,X_p$ sea.\\
+
+\begin{equation}
+f(Y|\beta,\sigma) = N_n (X\beta,\sigma^2 I)
+\end{equation}
+
+donde $Y$ es $n~x~1$, $X=[X_1,\cdots,X_p]$ es una matriz de $n~x~p$, $\beta$ es un vector de $p~x~1$ de regresores desconocidos, y $\tau ^{2} >0$.\\
+
+~~Una de las motivaciones de SSVS se produce cuando hay alg\'un subconjunto predictores con coeficientes de regresi\'on tan peque\~nos que ser\'ia preferible ignorarlos, sean los regresores.
+
+\begin{equation}
+\gamma = ( \gamma_1, \cdots, \gamma_p)'
+\end{equation}
+
+donde $\gamma_i=0$ o 1 si $\beta_i$ es peque\~na o grande respectivamente, el tama\~no de el conjunto se denota como $q_\gamma = \gamma ' 1$ dado que el valor apropiado de $\gamma$ es desconocido modelamos estoc\'asticamente una prior $\pi (\beta, \tau ^{2}, \gamma)=\pi(\beta | \tau ^{2}, \gamma )\pi (\tau ^{2} | \gamma) \pi(\gamma)$ y de manera condicional se especif\'ica como sigue:
+
+\begin{equation}
+\pi(\beta | \tau ^{2}, \gamma) = N_p (0, \gamma_{\tau ^{2},\gamma})
+\end{equation}
+
+~~Con respecto al modelo de regresi\'on, es v\'alido tomar una distribuc\'on con base en el conocimiento que se tenga de los mismos. En caso de no tener informaci\'on al respecto suele proponerse alguna ditribuci\'on \textit{no informativa} que permita a al modelo abarcar todos (o amplia cantidad) los casos posibles donde ``vivan''  cada una de las verdaderas variables. es decir \textit{inicial} o \textit{a-priori}. \\
+
+Uno de los objetivos m\'as importantes al utilizar un modelo \textit{Bayesiano} es poder conocer la distribuci\'on \textit{final} o \textit{a-posteriori} de nuestros par\'ametros una vez observados y analizada la informaci\'on de la muestra. Es decir, la informaci\'on recabada de la muestra actualiza la informaci\'on que se conoc\'ia de cada una de las variables y se tiene una nueva caracterizaci\'on de cada una de las mismas y, como consecuencia, los modelos se vuelven m\'as precisos al momento de estimar o predecir valores de nuestra variable dependiente.\\
+
+\subsection{Consideraciones a-priori}
+\vspace{3mm}
+
+Una de las motivaciones para elegir SSVS es por que justamente se prefiere que la configuraci\'on de arranque de las simulaciones sea con todos los coeficientes no significativos; se toman en cuenta 26 variables.
+
+Para cada conjunto de datos, se utilizaron dos conjuntos de a-prioris. El primer set fue elegido para ser informativa, y el segundo fue elegida para ser vaga. En el primero se tomaron las probabilidades de que cada una de las covariables fueran includas en el modelo como $P(\gamma_j=1)=\frac{1}{5}$, ya que esa es la proporci\'on de ausentismo que se manifest\'o en todo el pa\'is. Sin embargo, se volvi\'o a correr el algoritmo con una segunda a-priori sin sesgo de considerar que un caso es más o menos probable que el otro, por lo que en este caso se tom\'o a $P(\gamma_j=1)=\frac{1}{2}$. Los resultados que se presentan son de este segundo caso.\\
+
+
+
+
+\subsection{Subconjunto de Regresores}
+
+~~En el presente trabajo se propuso un tipo de \textit{funci\'on liga} as\'i como un escenario de distribuciones \textit{iniciales no informativas}. considerando que tenga una combinaci\'on de simplicidad para interpretar. \\
+
+\begin{itemize}
+    \item Establecer una distribuci\'on para nuestra variable dependiente.
+   	\item Definir la \textit{funci\'on liga} a utilizar.
+	\item Proponer ditribuciones iniciales (a-priori) para los coeficientes de regresi\'on.  
+\end{itemize}
+
+La variable de inter\'es es dicot\'omica, se hay ausentismo o no del funcionario de casilla el d\'ia de las elecciones, la cual se busca explicar con las variables mencionadas anteriormente.\\
+
+Consideramos una distribuci\'on Bernoulli para explicar la variable aleatoria donde el par\'metro de probabilidad \textit{p} se refieren a la probabilidad de ausencia.\\
+
+Lo anterior hace sentido ya que se trata de una variable aleatoria con dominio \{0,1\} lo cual va acorde con el la probabilidad de clasificaci\'on en el problema.\\
+
+De este modo, la verosimilitud de los datos se ve como :\\
+
+\begin{equation}
+Y_i|p_i~Bin(p_i)
+\end{equation}
+
+Se utiliz\'o la liga para el modelo bernoulli de tipo log\'istica hay que notar que en este caso la liga can\'onica.\\
+
+Log\'istica:
+\begin{equation}
+logit(p_i) = \frac{p_i}{1-p_i} = \alpha+\bar{\beta}*\bar{X}
+\end{equation}\\
+
+Como se mencin\'o con anterioridad se utilizaron a-prioris vagas o no informativas (se construye con varianza grande), como $\beta_j \sim N(0,\tau_{j}^{2}{[\gamma]})$ donde 
+
+\begin{equation*}
+\alpha \sim N(0,10^{-6})
+\end{equation*}
+
+\begin{equation*}
+\sigma_{\beta_j} \sim Unif(0,20)
+\end{equation*}
+
+\begin{equation*}
+\tau^{2} = \sigma_{\beta_j}^{2}
+\end{equation*}
+
+
+\begin{equation*}
+\tau_{j}^{2}{[1]} = \tau^{2}
+\end{equation*}
+
+\begin{equation*}
+\tau_{j}^{2}{[0]} = g*\tau^{2}=1000*\tau^{2}
+\end{equation*}
+
+\begin{equation*}
+\gamma \sim Ber(0.5)
+\end{equation*}
+
+\section{Computo y Resultados}
+\label{S:3}
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.6\linewidth]{results}
+\end{figure}
+
+El resultado de las corridas nos arroja la distribuci\'on de probabilidades de cada variable despu\'es de probarse las diferentes configuraciones
+
+Por comodidad se manipularon los modelo de tipo \textit{bugs} como funciones en R, con el fin de poder cambiar facilmente de escenario. Para simular probabilidades posteriores, se utiliz\'o la funci\'on \textit{jags} la cual est\'a cargada en la paqueter\'ia \textit{rjags} cuyo m\'etodo de simulaci\'on es un proceso recursivo de muestreo de Gibbs.\\
+
+\subsection{Resultados}
+\vspace{3mm}
+Lo que primero que nos arrojan los resultado es que las variables \textit{Notificaciones Efectivas, Porcentaje de Aptos, Porcentaje de funcionarios con primaria como m\'aximo grado de estudios, Porcentaje de funcionarios con secundaria como m\'aximo grado de estudios, Porcentaje de funcionarios con bachillerato como m\'aximo grado de estudios y Edad m\'inima de los funcionarios de la casilla con respecto a las edades de la entidad} son las que resultaron con las m\'as altas probabilidades de ser incluidas en alg\'un modelo. De \'estas todas resultaron con $\beta{'s}$ significativas ya que sus intervalos de probabilidad no incluyen al cero.
+
+\subsection{Modelos}
+\vspace{3mm}
+
+\subsubsection{Modelo utilizando la moda de las configuraciones}
+\vspace{3mm}
+
+Para este caso se tom\'o la configuraci\'on con mayor probabilidad arrojada entre las simulaciones generadas, es decir con mayor frecuencia. Posteriormente se calculan las probabilidades de ausentismo para cada casilla a la inversa de la funci\'on logit y observamos que, aunque hay cosas que a\'un no logra explicar el modelo, su forma creciente va alineada con m\'as casos reales de ausentismo.
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.8\linewidth]{entrena_argmax}
+\label{fig:CoL}
+\end{figure}
+
+\subsubsection{Modelo utilizando promedio bayesiano}
+\vspace{3mm}
+
+Este modelo se ajusta v\'ia promedio bayesiano tomando en cuenta todas las configuraciones, ponderando por la probabilidad de cada una y multiplicando por las medias de las distribuciones finales de las $\beta{'s}$. En particular, la estimaci\'on de ausentismo en esta Entidad se dificult\'o, ya que su capacitaci\'on electoral fue muy buena y por lo tanto el porcentaje de casillas que presentaron ausentismo fue muy bajo, lo anterior complica la estimaci\'on de las casillas con ausentismo. A primera vista parece que este modelo es que el mejor se adapta de las tres opciones que analizamos.\\
+
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.8\linewidth]{prueba_promedio}
+\label{fig:AL}
+\end{figure}
+
+\subsubsection{Modelo utilizando la distribuci\'on posterior generada (probabilidades individuales de cada indicadora)}
+\vspace{3mm}
+
+En este caso, tanto para los datos de entrenamiento como los de prueba, se gener\'o un modelo que consideraba las medias de la distribuci\'on final de las variables $\gamma_j$ y se multiplicaban por las medias de las $\beta_j$ que resultaron significativas con respecto a sus intervalos de probabilidad.\\
+
+Esta configuraci\'on arroj\'o pocas cosas interesantes pero vale la pena ilustrarlas para conocimiento del lector.\\
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.8\linewidth]{entrena_prob_individuales}
+\label{fig:FL}
+\end{figure}
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.8\linewidth]{prueba_prob_individuales}
+\label{fig:CL}
+\end{figure}
+
+
+Para tener una mayor certeza de lo \'ultimo comentado, podemos hacer una evalucaci\'on de la efectividad de dichos modelos, esto con ayuda de una matriz de confusi\'on en la que comparamos los valores reales contra los predichos, tanto los positivos como negativos
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.8\linewidth]{matriz_con}
+\label{fig:mc}
+\end{figure}
+
+
+\section{Conclusiones}
+\vspace{3mm}
+
+Tomando como criterio la informaci\'on que nos arrojan las matrices de confusi\'on se decide proponer al \textit{INE} la implementaci\'on del modelo que utiliza la configuraci\'on basada en promedios bayesianos ya que la proporci\'on de verdaderos positivos con respecto a los positivos predichos tuvo su valor m\'as alto en ese modelo. As\'i tambi\'en se propone \'este pues considera mucha m\'as informaci\'on que los modelos de las medias finales o los valores de la configuraci\'on-modal, es decir, contiene mayor informaci\'on y eso propociona mayor certeza y tranquilidad para confiar en las estimaciones/predicciones que se necesiten.\\
+
+\begin{figure}[H]
+\caption{}
+\centering
+\includegraphics[width=0.8\linewidth]{betas_probas.png}
+\end{figure}
+
+En el gr\'afico anterior observamos lo anteriormente comentado, tomando los valores absolutos de las betas estimadas, lo comparamos con las probabilidades encontradas de las configuraciones diferentes de cero, de tal manera que se puede ver que mientras mayor es el valor de las betas, es decir m\'as significativo la probabilidad de que dicha variable ocupe un lugar en el m\'odelo \'optimo se acercan a 1.
+
+Por otro lado, el modelo de regresi\'on adecuado para el DF fue el logit. se presentan los efectos que tiene el aumento en la probabilidad por un cambio en la variable en cuesti\'on.
+
+Por lo tanto, una primera recomendaci\'on para realizar es generar modelos por entidad, donde en cada una se consideren las variables respectivas que resulten significativas y puedan ser evidentes los patrones que generan las variables explicativas.\\
+
+Consecuentemente, el siguiente paso es el de realizar la selecci\'on y an\'alisis para cada una de las entidades, para ir identificando las variables significativas para el $Ausentismo$ en cada una, pero ya de una manera autom\'atica.
+
+Luego entonces, durante los siguientes procesos electorales, conforme, para cada casilla, se vaya generando la informaci\'on del proceso de capacitaci\'on, \'esta se podr\'a ingresar al modelo de la entidad correspondiente y saber cu\'al es la probabilidad estimada de que en esa casilla se presente $Ausentismo$.\\
+
+Un siguiente paso en la continuidad de este estudio es la de realizar un an\'alisis de sensibilidad m\'as detallado de manera que la calibraci\'on de los para\'ametros de las distribuciones iniciales y los valores iniciales sean m\'as adecuados a los datos y los modelos que se generen sea m\'as certeros.\\ 
+
+Así tambi\'en, se propone iniciar la incorporaci\'on de un modelo espacial para poder considerar las geo-referencias de cada casilla, pues se tiene la hip\'otesis que casillas cercanas se comportan de manera similar y si e puden extraer datos de las zonas de las casillas puden irse agregando al estudio y ayudar a explicar mejor el fen\'omeno.\\
+
+Cabe se\~nalar que dependiendo el tipo de regresores la efectividad del m\'etodo de selecci\'on de variables se ver\'a afectada, se corrobor\'o que SSVS es computacionalmente exahustivo. Por lo tanto, en el paso de detecci\'on de variables se tiene que modular sobre la correcta elecci\'on de la funci\'on a-priori, as\'i como la configuraci\'on inicial. El muestreo de Gibbs también requiere la selecci\'on de los par\'ametros anteriores. En este estudio de simulaci\'on, cambiando el prior de los valores $\gamma$ podemos ver diferencia significativa en el poder de SSVS y en este caso se debi\'o a que los mismos datos fueron tomando un protagonismo important\'isimo a tal grado que corrigieron sin ning\'un problema los valores de las distribuciones iniciales que se hab\'ian asignado. Fue por ello que cuando se cambi\'o por una distribuci\'on sin el sesgo hacia un lado o hacia el otro, fue mucho m\'as f\'acil que convergiera hacia el resultado final.
+
+
+
+%----------------------------------------------------------------------------------------
+%	REFERENCE LIST
+%----------------------------------------------------------------------------------------
+
+\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
+
+\bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
+Figueredo, A.~J. and Wolf, P. S.~A. (2009).
+\newblock Assortative pairing and life history strategy - a cross-cultural
+  study.
+\newblock {\em Human Nature}, 20:317--330.
+ 
+ \bibitem[R.B. O’Hara∗ and M. J. Sillanpaa†, 2009]{O’Hara:2009dg}
+\newblock A Review of Bayesian Variable Selection
+Methods: What, How and Which
+\newblock {\em Bayesian Analysis }, 85-118.
+ 
+ \bibitem[Edward I George; Robert E. McCulloch, 1993]{McCulloch:1993}
+\newblock Variable Selection Via Gibbs Sampling
+\newblock {\em Journal of the American Statistical Associattion }, 881-889.
+ 
+  \bibitem[Jian Huang, Patrick Breheny and Shuangge Ma, 2012]{McCulloch:1993}
+\newblock A Selective Review of Group Selection in
+High-Dimensional Models
+\newblock {\em Institute of Mathematical Statistics}.
+ 
+\end{thebibliography}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
